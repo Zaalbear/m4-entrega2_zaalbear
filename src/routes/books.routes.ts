@@ -1,16 +1,17 @@
 import { Router } from "express"
 import { BooksControllers } from "../controllers/books.controllers"
+import { validateID, validateName } from "../middlewares/books.middleware"
 
 export const booksRouter = Router()
 
 const bookControllers = new BooksControllers()
 
-booksRouter.post("/", bookControllers.postBooks)
+booksRouter.post("/", validateName.execute, bookControllers.postBooks)
 
 booksRouter.get("/", bookControllers.getBooks)
 
-booksRouter.get("/:id", bookControllers.getOneBook)
+booksRouter.get("/:id", validateID.execute, bookControllers.getOneBook)
 
-booksRouter.patch("/:id", bookControllers.updateBooks)
+booksRouter.patch("/:id", validateID.execute, validateName.execute, bookControllers.updateBooks)
 
-booksRouter.delete("/:id", bookControllers.deleteBooks)
+booksRouter.delete("/:id", validateID.execute, bookControllers.deleteBooks)

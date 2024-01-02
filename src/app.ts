@@ -5,5 +5,4 @@ export const app = express();
 
 app.use(json());
 
-app.use("/books", booksRouter)
-
+app.use("/books", booksRouter);
