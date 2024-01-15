@@ -1,15 +1,15 @@
 import { booksDatabase, generateId } from "../database/database";
-import { IBooks } from "../interfaces/books.interfaces";
+import { IBooks, TPostBook, TUpdateBooks } from "../interfaces/books.interfaces";
 
 export class BooksServices {
   date = new Date();
 
-  postBooks(name: string, pages: number, category: string) {
-    const newBook: IBooks = {
+  postBooks(data: TPostBook) {
+    const newBook = {
       id: generateId(),
-      name,
-      pages,
-      category,
+      name: data.name,
+      pages: data.pages,
+      category: data.category,
       createdAt: this.date,
       updatedAt: this.date,
     };
@@ -19,7 +19,11 @@ export class BooksServices {
     return newBook;
   }
 
-  getBooks() {
+  getBooks(name?: any) {
+    if (name){
+      const findBook = booksDatabase.filter((book) => { book.name === name})
+      return findBook;
+    }
     return booksDatabase;
   }
 
@@ -31,21 +35,13 @@ export class BooksServices {
 
   updateBooks(
     id: string,
-    name?: string,
-    pages?: number,
-    category?: string
+    data: TUpdateBooks,
   ): IBooks {
-    const editBook = booksDatabase.findIndex((book) => book.id === Number(id));
-    const newBook = {
-      id: Number(id),
-      name: name ? name : booksDatabase[editBook].name,
-      pages: pages ? pages : booksDatabase[editBook].pages,
-      category: category ? category : booksDatabase[editBook].category,
-      createdAt: booksDatabase[editBook].createdAt,
-      updatedAt: this.date,
-    };
+    const editBook = booksDatabase.find((book) => book.id === Number(id)) as IBooks;
+    const newBook = {...editBook, ...data, updatedAt: this.date,};
 
-    booksDatabase.splice(editBook, 1, newBook);
+    const index = booksDatabase.findIndex((book) => book.id === Number(id))
+    booksDatabase.splice(index, 1, newBook);
 
     return newBook;
   }

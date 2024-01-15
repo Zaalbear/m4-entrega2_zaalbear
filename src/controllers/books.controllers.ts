@@ -5,19 +5,17 @@ export class BooksControllers {
   postBooks(req: Request, res: Response): Response {
     const bookService = new BooksServices();
 
-    const newBook = bookService.postBooks(
-      req.body.name,
-      req.body.pages,
-      req.body.category
+    const newbook = bookService.postBooks(
+      req.body
     );
 
-    return res.status(201).json(newBook);
+    return res.status(201).json(newbook);
   }
 
-  getBooks(req: Request, res: Response): Response {
+  getBooks(req: Request, res: Response) {
     const booksService = new BooksServices();
-
-    const response = booksService.getBooks();
+    const name = req.query.search
+    const response = booksService.getBooks(name);
 
     return res.status(200).json(response);
   }
@@ -35,9 +33,7 @@ export class BooksControllers {
 
     const response = bookService.updateBooks(
       req.params.id,
-      req.body.name,
-      req.body.pages,
-      req.body.category
+      req.body
     );
 
     return res.status(200).json(response);
